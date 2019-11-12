@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 员工考核数据访问实现类 -->
+<mapper namespace="com.company.dao.ApproveStateDao">
+	<select id="findASById" resultType="ApproveState">
+		select approveStateId,approveState from approvestate where approveStateId =
+		#{approveStateId}
+	</select>
+	<select id="findASAll" resultType="ApproveState">
+		select approveStateId,approveState from approvestate
+	</select>
+</mapper>

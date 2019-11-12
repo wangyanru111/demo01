@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 办公用品数据访问实现类 -->
+<mapper namespace="com.company.dao.OfficeDao">
+	<resultMap type="com.company.pojo.Office" id="resultMap1">
+		<id column="oId" property="oId" />
+		<result column="oName" property="oName" />
+		<result column="requestStateId" property="requestStateId" />
+		<result column="officeTypeId" property="officeTypeId" />
+		<result column="num" property="num" />
+		<association property="requestState" javaType="com.company.pojo.RequestState">
+			<id column="requestStateId" property="requestStateId" />
+			<result column="requestState" property="requestState" />
+		</association>
+		<association property="officeType" javaType="com.company.pojo.OfficeType">
+			<id column="officeTypeId" property="officeTypeId" />
+			<result column="officeType" property="officeType" />
+		</association>
+	</resultMap>
+	<select id="findOfficeByOId" resultMap="resultMap1">
+		select
+		o.oId,o.oName,o.requestStateId,r.requestState,o.officeTypeId,t.officeType,o.num
+		from office o,officeType t,requestState r where o.requestStateId =
+		r.requestStateId and o.officeTypeId=t.officeTypeId and o.oId= #{oId}
+	</select>
+	
+	
+	<select id="findOfficeByRSId" resultMap="resultMap1">
+		select
+		o.oId,o.oName,o.requestStateId,r.requestState,o.officeTypeId,t.officeType,o.num
+		from office o,officeType t,requestState r where o.requestStateId =
+		r.requestStateId and o.officeTypeId=t.officeTypeId and
+		o.requestStateId = #{requestStateId}
+	</select>
+	<select id="findOfficeAll" resultMap="resultMap1">
+		select
+		o.oId,o.oName,o.requestStateId,r.requestState,o.officeTypeId,t.officeType,o.num
+		from office o,officeType t,requestState r where o.requestStateId =
+		r.requestStateId and o.officeTypeId=t.officeTypeId
+	</select>
+	<update id="updateOffice">
+		update office
+		<set>
+			<if test="oName!=null">oName=#{oName},</if>
+			<if test="requestStateId!=null">requestStateId=#{requestStateId},</if>
+			<if test="officeTypeId!=null">officeTypeId=#{officeTypeId},</if>
+			<if test="num!=null">num=#{num}</if>
+		</set>
+		where oId=#{oId}
+	</update>
+	<delete id="deleteOfficeByOId">
+		delete from office where oId = #{oId}
+	</delete>
+	<insert id="addOffice">
+		insert into
+		office(oName,requestStateId,officeTypeId,num)
+		values(#{oName},#{requestStateId},#{officeTypeId},#{num})
+	</insert>
+	<delete id="deleteArr">
+		delete from office where oId in
+		<foreach collection="array" item="oId" open="(" separator=","
+			close=")">
+			#{oId}
+		</foreach>
+
+	</delete>
+</mapper>

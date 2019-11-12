@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.SalaryDao">
+	<resultMap type="com.company.pojo.Salary" id="resultMap1">
+		<id column="id" property="id" />
+		<result column="lId" property="lId" />
+		<result column="sal" property="sal" />
+		<result column="jobId" property="jobId" />
+		<association property="empLevel" javaType="com.company.pojo.EmpLevel">
+			<id column="lId" property="lId" />
+			<result column="level" property="level" />
+		</association>
+		<association property="job" javaType="com.company.pojo.Job">
+			<id column="jobId" property="jobId" />
+			<result column="job" property="job" />
+		</association>
+	</resultMap>
+	<select id="findSalaryById" resultMap="resultMap1">
+		select
+		s.id,s.lId,e.level,s.sal,s.jobId,j.job from salary s,empLevel e,job j
+		where s.lId=e.lId and s.jobId=j.jobId and s.id=#{id}
+	</select>
+	<select id="findSalary" resultMap="resultMap1">
+		select
+		s.id,s.lId,e.level,s.sal,s.jobId,j.job from salary s,empLevel e,job j
+		where s.lId=e.lId and s.jobId=j.jobId and s.lId=#{lId} and
+		s.jobId=#{jobId}
+	</select>
+	<select id="findSalaryByJobId" resultMap="resultMap1">
+		select
+		s.id,s.lId,e.level,s.sal,s.jobId,j.job from salary s,empLevel e,job j
+		where s.lId=e.lId and s.jobId=j.jobId and s.jobId=#{jobId}
+	</select>
+	<update id="updateSalary">
+		update salary
+		<set>
+			<if test="lId!=null">lId=#{lId},</if>
+			<if test="sal!=null">sal=#{sal},</if>
+			<if test="jobId!=null">jobId=#{jobId}</if>
+
+		</set>
+		where id=#{id}
+	</update>
+
+</mapper>

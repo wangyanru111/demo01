@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 车辆数据访问实现类 -->
+<mapper namespace="com.company.dao.CarsDao">
+
+	<resultMap type="com.company.pojo.Cars" id="resultMap1">
+		<id column="carId" property="carId" />
+		<result column="requestStateId" property="requestStateId" />
+		<result column="number" property="number" />
+		<result column="param" property="param" />
+		<result column="carTypeId" property="carTypeId" />
+		<association property="carType" javaType="com.company.pojo.CarType">
+			<id column="carTypeId" property="carTypeId" />
+			<result column="carType" property="carType" />
+		</association>
+		<association property="requestState" javaType="com.company.pojo.RequestState">
+			<id column="requestStateId" property="requestStateId" />
+			<result column="requestState" property="requestState" />
+		</association>
+	</resultMap>
+	<select id="findCarsById" resultMap="resultMap1">
+		select
+		c.carId,c.requestStateId,r.requestState,c.number,c.param,c.carTypeId,t.carType
+		from cars c,requestState r,carType t where
+		c.requestStateId=r.requestStateId and c.carTypeId=t.carTypeId and
+		c.carId=#{carId}
+	</select>
+
+	<select id="findCarsByCTId" resultMap="resultMap1">
+		select
+		c.carId,c.requestStateId,r.requestState,c.number,c.param,c.carTypeId,t.carType
+		from cars c,requestState r,carType t where
+		c.requestStateId=r.requestStateId and c.carTypeId=t.carTypeId and
+		c.carTypeId=#{carTypeId}
+	</select>
+	<select id="findCarsByRSId" resultMap="resultMap1">
+		select
+		c.carId,c.requestStateId,r.requestState,c.number,c.param,c.carTypeId,t.carType
+		from cars c,requestState r,carType t where
+		c.requestStateId=r.requestStateId and c.carTypeId=t.carTypeId
+	</select>
+	<select id="findCarsAll" resultMap="resultMap1">
+		select
+		c.carId,c.requestStateId,r.requestState,c.number,c.param,c.carTypeId,t.carType
+		from cars c,requestState r,carType t where
+		c.requestStateId=r.requestStateId
+	</select>
+	<update id="updateCars">
+		update cars
+		<set>
+			<if test="requestStateId!=null">requestStateId = #{requestStateId}</if>
+		</set>
+		where carId = #{carId}
+	</update>
+	<delete id="deleteCarsById">
+		delete from cars where carId=#{carId}
+	</delete>
+	<insert id="addCars">
+		insert into
+		cars(requestStateId,number,param,carTypeId)
+		values(#{requestStateId},#{number},#{param},#{carTypeId})
+	</insert>
+	<delete id="deleteCarArray">
+		delete from cars where carId in
+		<foreach collection="array" item="carId" open="(" separator=","
+			close=")">
+			#{carId}
+		</foreach>
+
+	</delete>
+</mapper>

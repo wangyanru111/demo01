@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 会议室数据访问实现类 -->
+<mapper namespace="com.company.dao.MeetingRoomDao">
+	<resultMap type="com.company.pojo.MeetingRoom" id="requestMap1">
+		<id column="roomId" property="roomId" />
+		<result column="requestStateId" property="requestStateId" />
+		<result column="roomName" property="roomName" />
+		<association property="requestState" javaType="com.company.pojo.RequestState">
+			<id column="requestStateId" property="requestStateId" />
+			<result column="requestState" property="requestState" />
+		</association>
+	</resultMap>
+	<select id="findMeetingRoomById" resultMap="requestMap1">
+		select
+		r.roomId,r.requestStateId,r.roomName,s.requestState from meetingRoom
+		r,requestState s where r.requestStateId=s.requestStateId and r.roomId
+		=#{roomId}
+	</select>
+	<select id="findMeetingRoomByRSId" resultMap="requestMap1">
+		select
+		r.roomId,r.requestStateId,r.roomName,s.requestState from meetingRoom
+		r,requestState s where r.requestStateId=s.requestStateId
+		r.requestStateId =
+		#{requestStateId}
+	</select>
+	<select id="findMeetingRoomAll" resultMap="requestMap1">
+		select
+		r.roomId,r.requestStateId,r.roomName,s.requestState from meetingRoom
+		r,requestState s where r.requestStateId=s.requestStateId
+	</select>
+	<update id="updateMeetingRoom">
+		update meetingRoom
+		<set>
+			<if test="requestStateId!=null">requestStateId = #{requestStateId}</if>
+			<if test="roomName!=null">roomName = #{roomName}</if>
+		</set>
+		where roomId = #{roomId}
+	</update>
+	<update id="updateRequest">
+		update meetingroom set requestStateId = #{requestStateId} where roomId =
+		#{roomId}
+	</update>
+</mapper>

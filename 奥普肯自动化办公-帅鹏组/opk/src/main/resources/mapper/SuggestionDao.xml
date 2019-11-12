@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.SuggestionDao">
+	<resultMap type="com.company.pojo.Suggestion" id="resultMap1">
+		<id column="sid" property="sId" />
+		<result column="uid" property="uId" />
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="submitDate" property="submitDate" />
+		<association property="user" javaType="com.company.pojo.User">
+			<id column="uid" property="uId" />
+			<result column="uName" property="uName" />
+		</association>
+	</resultMap>
+
+	<select id="findSugAll" resultMap="resultMap1">
+		select s,sugId,s.uId,s.title,s.content,s.submitDate,u.uName from suggestion s,user u where s.uid=u.uid
+
+	</select>
+	<select id="findSugBySid" resultMap="resultMap1">
+		select s,sugId,s.uId,s.title,s.content,s.submitDate,u.uName from suggestion s,user u where s.uid=u.uid and
+		s.sugId=#{sugId}
+	</select>
+	<select id="findSugByUid" resultMap="resultMap1">
+		select s,sugId,s.uId,s.title,s.content,s.submitDate,u.uName from suggestion s,user u where s.uid=u.uid and
+		s.uId=#{uId}
+	</select>
+
+	<select id="findSugByDate" resultMap="resultMap1">
+		select s,sugId,s.uId,s.title,s.content,s.submitDate,u.uName from suggestion s,user u where s.uid=u.uid and s.submitDate between
+		#{startDate} and #{endDate}
+	</select>
+	<delete id="deleteSugBySid">
+		delete from suggestion where sugId=#{sugId}
+
+	</delete>
+	<delete id="deleteSugByUid">
+		delete from suggestion where uId=#{uId}
+
+	</delete>
+	<delete id="deleteSugByDate">
+		delete from suggestion where startDate=#{startDate}
+		and
+		endDate=#{endDate}
+
+	</delete>
+	<update id="updateSug">
+		update suggestion
+		<set>
+			<if test="uId!=null">uId=#{uId},</if>
+			<if test="title!=null">title=#{title},</if>
+			<if test="content!=null">content=#{content},</if>
+			<if test="submitDate!=null">submitDate=#{submitDate}</if>
+
+		</set>
+		where sugId=#{sugId}
+	</update>
+	<insert id="addSug">
+		insert into suggestion
+		(uId,title,content,submitDate)
+		values(#{uId},#{title},#{content},#{submitDate})
+	</insert>
+</mapper>

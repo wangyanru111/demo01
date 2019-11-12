@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.ProjectStateDao">
+	<select id="findProStateAll" resultType="com.company.pojo.ProjectState">
+		select * from
+		ProjectState
+	</select>
+	<select id="findProStateByPTId" resultType="com.company.pojo.ProjectState">
+		select * from
+		ProjectState where stateId=#{stateId}
+	</select>
+</mapper>

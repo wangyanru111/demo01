@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.MeetingDao">
+	<resultMap type="com.company.pojo.Meeting" id="resultMap1">
+		<id column="mid" property="mId" />
+		<result column="theme" property="theme" />
+		<result column="content" property="content" />
+		<result column="meetingDate" property="meetingDate" />
+		<result column="recorder" property="recorder" />
+		<result column="chairman" property="chairman" />
+		<result column="approveStateId" property="approveStateId" />
+		<result column="roomId" property="roomId" />
+		<association property="approveState" javaType="com.company.pojo.ApproveState">
+			<id column="approveStateId" property="approveStateId" />
+			<result column="approveState" property="approveState" />
+		</association>
+		<association property="meetingRoom" javaType="com.company.pojo.MeetingRoom">
+			<id column="roomId" property="roomId" />
+			<result column="roomName" property="roomName" />
+		</association>
+
+		<association property="chairmanUser" javaType="com.company.pojo.User">
+			<id column="chairman" property="uId" />
+			<result column="mcName" property="uName" />
+		</association>
+
+		<association property="recorderUser" javaType="com.company.pojo.User">
+			<id column="recorder" property="uId" />
+			<result column="mrName" property="uName" />
+		</association>
+
+	</resultMap>
+	<select id="findMeetionAll" resultMap="resultMap1">
+		SELECT
+		m.mid,
+		m.theme,
+		m.content,
+		m.meetingDate,
+		m.chairman,
+		m.recorder,
+		m.approveStateId,
+		m.roomId,
+		r.roomName,
+		a.approveState,
+		u1.uName mrName,
+		u2.uName mcName
+		FROM
+		meeting m,
+		meetingroom r,
+		approveState a,
+		`user` u1,
+		`user` u2
+		WHERE
+		m.approveStateId = a.approveStateId
+		AND m.roomId = r.roomId
+		AND
+		m.recorder = u1.uId
+		AND m.chairman = u2.uId
+		ORDER BY m.mid DESC
+	</select>
+	<select id="findMeetionByChairman" resultMap="resultMap1">
+		select
+		m.mid,m.theme,m.content,m.meetingDate,m.recorder,m.chairman,m.approveStateId,m.roomId,r.roomName,a.approveState,u1.uName,u2.uName
+		from meeting m,meetingroom r,approveState a,user u1,user u2 where
+		m.approveStateId=a.approveStateId and m.roomId=r.roomId and
+		m.recorder=u1.uId and m.chairman=u2.uId and m.chairman = #{chairman}
+	</select>
+	<select id="findMeetionByRecorder" resultMap="resultMap1">
+		select
+		m.mid,m.theme,m.content,m.meetingDate,m.recorder,m.chairman,m.approveStateId,m.roomId,r.roomName,a.approveState,u1.uName,u2.uName
+		from meeting m,meetingroom r,approveState a,user u1,user u2 where
+		m.approveStateId=a.approveStateId and m.roomId=r.roomId and
+		m.recorder=u1.uId and m.chairman=u2.uId and m.recorder=#{recorder}
+	</select>
+	<select id="findMeetionByMId" resultMap="resultMap1">
+		SELECT
+		m.mid,
+		m.theme,
+		m.content,
+		m.meetingDate,
+		m.chairman,
+		m.recorder,
+		m.approveStateId,
+		m.roomId,
+		r.roomName,
+		a.approveState,
+		u1.uName mrName,
+		u2.uName mcName
+		FROM
+		meeting m,
+		meetingroom r,
+		approveState a,
+		`user` u1,
+		`user` u2
+		WHERE
+		m.approveStateId = a.approveStateId
+		AND m.roomId = r.roomId
+		AND
+		m.recorder = u1.uId
+		AND m.chairman = u2.uId And m.mId=#{mId}
+	</select>
+	<select id="findMeetionByTheme" resultMap="resultMap1">
+		SELECT
+		m.mid,
+		m.theme,
+		m.content,
+		m.meetingDate,
+		m.chairman,
+		m.recorder,
+		m.approveStateId,
+		m.roomId,
+		r.roomName,
+		a.approveState,
+		u1.uName mrName,
+		u2.uName mcName
+		FROM
+		meeting m,
+		meetingroom r,
+		approveState a,
+		`user` u1,
+		`user` u2
+		WHERE
+		m.approveStateId = a.approveStateId
+		AND m.roomId = r.roomId
+		AND
+		m.recorder = u1.uId
+		AND m.chairman = u2.uId And m.theme like '%${theme}%'
+	</select>
+	<select id="findMeetionByDate" resultMap="resultMap1">
+		select
+		m.mid,m.theme,m.content,m.meetingDate,m.recorder,m.chairman,m.approveStateId,m.roomId,r.roomName,a.approveState,u1.uName,u2.uName
+		from meeting m,meetingroom r,approveState a,user u1,user u2 where
+		m.approveStateId=a.approveStateId and m.roomId=r.roomId and
+		m.recorder=u1.uId and m.chairman=u2.uId and m.meetingDate between
+		#{startDate} and #{endDate}
+	</select>
+
+	<update id="updateMeeting">
+		update meeting
+		<set>
+			<if test="theme!=null">theme=#{theme}</if>
+			<if test="content!=null">content=#{content}</if>
+			<if test="meetingDate!=null">meetingDate=#{meetingDate}</if>
+			<if test="approveStateId!=null">approveStateId=#{approveStateId}</if>
+			<if test="recorder!=null">recorder=#{recorder}</if>
+			<if test="chairman!=null">chairman=#{chairman}</if>
+		</set>
+		where mId=#{mId}
+	</update>
+	<insert id="addMeeting">
+		insert into meeting
+		(theme,content,meetingDate,approveStateId,recorder,chairman,roomId)
+		values(#{theme},#{content},#{meetingDate},#{approveStateId},#{recorder},#{chairman},#{roomId})
+	</insert>
+	<update id="updateApprove">
+		update meeting
+		<set>
+			<if test="approveStateId!=null">approveStateId=#{approveStateId}</if>
+		</set>
+		where mId = #{mId}
+	</update>
+	<delete id="deleteMeetingByMid">
+		delete from meeting where mId = #{mId}
+	</delete>
+	<update id="updateContent">
+		update meeting
+		<set>
+			<if test="content!=null">content=#{content}</if>
+		</set>
+		where mId = #{mId}
+	</update>
+</mapper>

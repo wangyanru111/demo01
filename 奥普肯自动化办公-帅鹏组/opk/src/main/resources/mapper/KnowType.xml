@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.KnowTypeDao">
+<select id="findKnowTypeByKTId" resultType="com.company.pojo.KnowType">
+		select * from knowtype where knowTypeId=#{knowTypeId}
+	</select>
+	<select id="findKnowTypeAll" resultType="com.company.pojo.KnowType">
+		select * from knowtype 
+	
+	</select>
+</mapper>

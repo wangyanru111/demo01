@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 员工职位数据访问实现类 -->
+<mapper namespace="com.company.dao.JobDao">
+	<select id="findELBylId" resultType="Job">
+		select jobId,job from job
+		where jobId=#{jobId}
+	</select>
+	<select id="findELAll" resultType="Job">
+		select jobId,job from job
+	</select>
+</mapper>

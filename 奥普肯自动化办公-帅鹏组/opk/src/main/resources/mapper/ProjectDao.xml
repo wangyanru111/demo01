@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.ProjectDao">
+	<resultMap type="com.company.pojo.Project" id="resultMap">
+		<id column="pId" property="pId" />
+		<result column="proTid" property="proTid" />
+		<result column="pName" property="pName" />
+		<result column="createDate" property="createDate" />
+		<result column="stateId" property="stateId" />
+		<result column="dId" property="dId" />
+		<result column="approveStateId" property="approveStateId" />
+		<result column="context" property="context" />
+		<association property="dept" javaType="com.company.pojo.Dept">
+			<id column="dId" property="dId" />
+			<result column="dName" property="dName" />
+		</association>
+		<association property="projectType" javaType="com.company.pojo.ProjectType">
+			<id column="proTid" property="proTid" />
+			<result column="proType" property="proType" />
+		</association>
+		<association property="projectState" javaType="com.company.pojo.ProjectState">
+			<id column="stateId" property="stateId" />
+			<result column="state" property="state" />
+		</association>
+
+		<association property="approveState" javaType="com.company.pojo.ApproveState">
+			<id column="approveStateId" property="approveStateId" />
+			<result column="approveState" property="approveState" />
+		</association>
+	</resultMap>
+
+
+	<select id="findProAll" resultMap="resultMap">
+		SELECT
+		p.pid,pt.protype,p.pname,p.createdate,ps.state,d.dname,a.approvestate,p.context,p.approveStateId
+		FROM project
+		p,projectstate ps,projecttype pt,dept d,approvestate a
+		WHERE
+		pt.protid=p.protid AND ps.stateid=p.stateid AND d.did=p.did AND
+		a.approvestateid=p.approvestateid
+	</select>
+
+	<select id="findProByPId" resultMap="resultMap">
+		SELECT
+		p.pid,pt.protype,p.pname,p.createdate,p.stateid,ps.state,d.dname,a.approvestate,p.context,p.approveStateId
+		FROM project
+		p,projectstate ps,projecttype pt,dept d,approvestate a
+		WHERE
+		pt.protid=p.protid AND ps.stateid=p.stateid AND d.did=p.did AND
+		a.approvestateid=p.approvestateid and
+		pid = #{pId}
+	</select>
+
+	<select id="findProByASid" resultMap="resultMap">
+		SELECT
+		p.pid,pt.protype,p.pname,p.createdate,ps.state,d.dname,a.approvestate,p.context,p.approveStateId
+		FROM project
+		p,projectstate ps,projecttype pt,dept d,approvestate a
+		WHERE
+		pt.protid=p.protid AND ps.stateid=p.stateid AND d.did=p.did AND
+		a.approvestateid=p.approvestateid and
+		p.approveStateId =
+		#{approveStateId}
+	</select>
+
+	<select id="findProByPName" resultMap="resultMap">
+		SELECT
+		p.pid,pt.protype,p.pname,p.createdate,ps.state,d.dname,a.approvestate,p.context,p.approveStateId
+		FROM project
+		p,projectstate ps,projecttype pt,dept d,approvestate a
+		WHERE
+		pt.protid=p.protid AND ps.stateid=p.stateid AND d.did=p.did AND
+		a.approvestateid=p.approvestateid
+		and p.pname like '%${pName}%'
+	</select>
+
+	<select id="findProByTid" resultType="com.company.pojo.Project">
+		select * from project where
+		protid = #{proTid}
+	</select>
+
+	<select id="findProBySid" resultType="com.company.pojo.Project">
+		select * from project where
+		stateId = #{stateId}
+	</select>
+
+	<select id="findProByDid" resultType="com.company.pojo.Project">
+		select * from project where
+		dep_did = #{dep_did}
+	</select>
+
+	<select id="findProByDate" resultType="com.company.pojo.Project">
+		select * from project
+		where createDate between #{startDate} and #{endDate}
+	</select>
+
+	<insert id="addPro">
+		insert into
+		project(protid,pname,createdate,stateid,did,approvestateid,context)
+		values(#{proTid},#{pName},#{createDate},#{stateId},#{dId},#{approveStateId},#{context})
+	</insert>
+	<delete id="deletePid">
+		delete from project where pId=#{pId}
+	</delete>
+
+	<update id="submitproject">
+		update project set approveStateId=#{approveStateId}
+		where
+		pid=#{pId}
+	</update>
+
+	<update id="updatePro">
+		update project set stateId=#{stateId}
+		where
+		pid=#{pId}
+	</update>
+	<delete id="deletePro">
+		delete from project where pId in
+		<foreach collection="array" item="pId" open="(" separator=","
+			close=")">
+			#{pId}
+		</foreach>
+
+	</delete>
+
+</mapper>   

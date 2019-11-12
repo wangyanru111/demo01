@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.CityDao">
+	<select id="findCitiesByPid" resultType="com.company.pojo.City">
+		select * from city where
+		provinceId=#{provinceId}
+
+	</select>
+	<select id="findCitiesByCid" resultType="com.company.pojo.City">
+		select * from city where
+		cityId=#{cityId}
+
+	</select>
+</mapper>

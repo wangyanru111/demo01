@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.UserDao">
+
+	<resultMap type="com.company.pojo.User" id="resultMap">
+		<id column="uId" property="uId" />
+		<result column="dId" property="dId" />
+		<result column="lId" property="lId" />
+		<result column="jobId" property="jobId" />
+		<result column="uName" property="uName" />
+		<result column="pass" property="pass" />
+		<result column="spass" property="spass" />
+		<result column="sex" property="sex" />
+		<result column="age" property="age" />
+		<result column="tel" property="tel" />
+		<result column="inputDate" property="inputDate" />
+		<association property="dept" javaType="com.company.pojo.Dept">
+			<id column="dId" property="dId" />
+			<result column="dName" property="dName" />
+		</association>
+		<association property="empLevel" javaType="com.company.pojo.EmpLevel">
+			<id column="lId" property="lId" />
+			<result column="level" property="level" />
+		</association>
+		<association property="job" javaType="com.company.pojo.Job">
+			<id column="jobId" property="jobId" />
+			<result column="job" property="job" />
+		</association>
+	</resultMap>
+	<select id="findUserAll" resultMap="resultMap">
+		select
+		u.uid,u.uname,u.pass,u.spass,u.sex,u.age,u.tel,u.inputdate,d.dname,e.level,u.jobId,j.job
+		from user u,dept
+		d,emplevel e,job j where u.did=d.did and u.lid=e.lid
+		and
+		u.jobid=j.jobid
+	</select>
+	
+	<select id="findUserByDid" resultMap="resultMap">
+		SELECT
+		u.uId,
+		u.dId,
+		u.lId,
+		u.jobId, 
+		u.uName,
+		u.pass,
+		u.spass,
+		u.sex,
+		u.age,
+		u.tel,
+		u.inputDate,
+		d.`dName`,
+		e.level,
+		j.job
+		FROM
+		USER u,
+		dept d,
+		job j,
+		emplevel e
+		WHERE u.dId = d.dId
+		AND u.jobId = j.jobId
+		AND u.lId = e.lId
+		AND u.dId = #{dId}
+	</select>
+
+	<select id="findUserByName" resultType="com.company.pojo.User">
+		select * from user where
+		uname=#{uName} and pass=#{pass}
+	</select>
+	<select id="findUserByUid" resultMap="resultMap">
+		select
+		u.uid,u.uname,u.pass,u.spass,u.sex,u.age,u.tel,u.inputdate,d.dname,e.level,j.job
+		from user u,dept
+		d,emplevel e,job j where u.did=d.did and u.lid=e.lid
+		and
+		u.jobid=j.jobid
+		and
+		uId=#{uId}
+	</select>
+
+	<select id="findUserByJobId" resultMap="resultMap">
+		SELECT
+		u.uid,
+		u.uname,
+		u.pass,
+		u.spass,
+		u.sex,
+		u.age,
+		u.tel,
+		u.inputdate,
+		d.dname
+		FROM
+		USER u,
+		dept d,
+		job j,
+		emplevel e
+		WHERE u.`dId` = d.`did`
+		AND u.`jobId` = j.`jobId`
+		AND u.`lId` = e.`lId`
+		AND u.`jobId` = #{jobId}
+	</select>
+
+	<select id="findUserByJobIdAndELId" resultMap="resultMap">
+		select
+		u.uid,u.uname,u.pass,u.spass,u.sex,u.age,u.tel,u.inputdate,d.dname,e.level,j.job
+		from user u,dept
+		d,emplevel e,job j where u.did=d.did and u.lid=e.lid
+		and
+		u.jobid=j.jobid
+		and
+		uId=#{uId}
+	</select>
+
+	<insert id="regist">
+		insert into user
+		(dId,lId,jobId,uname,pass,sex,age,tel,inputDate)
+		values(#{dId},#{lId},#{jobId},#{uName},#{pass},#{sex},#{age},#{tel},#{inputDate})
+	</insert>
+	<delete id="deleteUser">
+		delete from user where uId =#{uId}
+
+	</delete>
+	<delete id="deleteUserByDid">
+		delete from user where dId =#{dId}
+	</delete>
+	<delete id="deleteUserByJobIdAndELId">
+		delete from user where jobId=#{jobId} and lId=#{lId}
+
+	</delete>
+	<delete id="deleteUserAll">
+		delete from user
+
+	</delete>
+	<update id="updateUser">
+		update user
+		<set>
+			<if test="dId!=null">dId=#{dId},</if>
+			<if test="lId!=null">lId=#{lId},</if>
+			<if test="jobId!=null">jobId=#{jobId},</if>
+			<if test="uName!=null">uName=#{uName},</if>
+			<if test="pass!=null">pass=#{pass},</if>
+			<if test="spass!=null">spass=#{spass},</if>
+			<if test="sex!=null">sex=#{sex},</if>
+			<if test="age!=null">age=#{age},</if>
+			<if test="tel!=null">tel=#{tel}</if>
+		</set>
+		where uId=#{uId}
+	</update>
+	<delete id="deleteArray">
+		delete from user where uId in
+		<foreach collection="array" item="uId" open="(" separator=","
+			close=")">
+			#{uId}
+		</foreach>
+
+	</delete>
+</mapper>

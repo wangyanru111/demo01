@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 车辆类型数据访问实现类 -->
+<mapper namespace="com.company.dao.CarTypeDao">
+	<select id="findCarsTypeByCTId" resultType="CarType">
+		select
+		carTypeId,carType from carType where
+		carTypeId=#{carTypeId}
+	</select>
+
+	
+	<select id="findCarsTypeAll" resultType="CarType">
+		select carTypeId,carType from carType
+	</select>
+</mapper>

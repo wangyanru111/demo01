@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 员工考核数据访问实现类 -->
+<mapper namespace="com.company.dao.AssessDao">
+	<resultMap type="com.company.pojo.Assess" id="resultMap1">
+		<id column="aId" property="aId" />
+		<result column="uId" property="uId" />
+		<result column="gradeId" property="gradeId" />
+		<result column="assessContext" property="assessContext" />
+		<result column="assessDate" property="assessDate" />
+		<association property="user" javaType="com.company.pojo.User">
+			<id column="uId" property="uId" />
+			<result column="uName" property="uName" />
+		</association>
+		<association property="grade" javaType="com.company.pojo.Grade">
+			<id column="gradeId" property="gradeId" />
+			<result column="grade" property="grade" />
+		</association>
+	</resultMap>
+	<select id="findAssAll" resultMap="resultMap1">
+		select
+		a.aId,a.uId,a.gradeId,a.assessDate,a.assessContext,u.uName,g.grade
+		from assess a,user
+		u,grade g where
+		a.uId = u.uId and a.gradeId =
+		g.gradeId;
+	</select>
+	<select id="findAssByAId" resultMap="resultMap1">
+		select
+		a.aId,a.uId,a.gradeId,a.assessDate,a.assessContext,u.uName,g.grade
+		from assess a,user
+		u,grade g where
+		a.uId = u.uId and a.gradeId =
+		g.gradeId and a.aId =
+		#{aId};
+	</select>
+	<select id="findAssByGId" resultMap="resultMap1">
+		select
+		a.aId,a.uId,a.gradeId,a.assessDate,a.assessContext,u.uName,g.grade
+		from assess a,user
+		u,grade g where
+		a.uId = u.uId and a.gradeId =
+		g.gradeId and g.gradeId =
+		#{gradeId};
+	</select>
+	<select id="findAssByUId" resultMap="resultMap1">
+		select
+		a.aId,a.uId,a.gradeId,a.assessDate,a.assessContext,u.uName,g.grade
+		from assess a,user
+		u,grade g where
+		a.uId = u.uId and a.gradeId =
+		g.gradeId and u.uId =
+		#{uId};
+	</select>
+	<select id="findAssByDate" resultMap="resultMap1">
+		select
+		a.aId,a.uId,a.gradeId,a.assessDate,a.assessContext,u.uName,g.grade
+		from assess a,user
+		u,grade g where
+		a.uId = u.uId and a.gradeId =
+		g.gradeId and a.gradeDate
+		between #{startDate} and #{endDate};
+	</select>
+
+	<select id="findAssByDateAndUId" resultMap="resultMap1">
+		SELECT
+		a.aId,
+		a.uId,
+		a.gradeId,
+		a.assessDate,
+		a.assessContext,
+		u.uName,
+		g.grade
+		FROM
+		assess a,
+		USER u,
+		grade g
+		WHERE a.uId = u.uId
+		AND a.gradeId = g.gradeId
+		AND
+		a.assessDate BETWEEN #{startDate} and #{endDate}
+		AND u.`uId` = #{uId};
+	</select>
+
+	<delete id="deleteAssByUId">
+		delete from assess where uId = #{uId}
+	</delete>
+	<delete id="deleteAssByAId">
+		delete from assess where aId = #{aId}
+	</delete>
+
+	<update id="updateAss">
+		UPDATE
+		assess
+		SET
+		gradeId = #{gradeId},
+		assessContext = #{assessContext}
+		WHERE aId=#{aId}
+	</update>
+
+	<insert id="addAss">
+		insert into
+		assess(uId,gradeId,assessDate,assessContext)
+		values(#{uId},#{gradeId},#{assessDate},#{assessContext})
+	</insert>
+</mapper>

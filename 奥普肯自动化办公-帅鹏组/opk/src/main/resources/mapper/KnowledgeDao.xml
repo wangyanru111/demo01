@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.dao.KnowledgeDao">
+	<resultMap type="com.company.pojo.Knowledge" id="resultMap1">
+		<id column="knowId" property="knowId" />
+		<result column="knowTypeId" property="knowTypeId" />
+		<result column="document" property="document" />
+		<result column="uploadDate" property="uploadDate" />
+		<association property="knowType" javaType="com.company.pojo.KnowType">
+			<id column="knowTypeId" property="knowTypeId" />
+			<result column="knowType" property="knowType" />
+		</association>
+	</resultMap>
+	<select id="findKnowByKId" resultMap="resultMap1">
+		select
+		k.knowId,k.knowTypeId,k.document,k.uploadDate,t.knowType from
+		knowledge k,knowType t
+		where k.knowTypeId=t.knowTypeId and
+		k.knowId=#{knowId}
+	</select>
+	<select id="findKnowByTId" resultMap="resultMap1">
+		select
+		k.knowId,k.knowTypeId,k.document,k.uploadDate,t.knowType from
+		knowledge k,knowType t
+		where k.knowTypeId=t.knowTypeId and k.knowTypeId=#{knowTypeId}
+	</select>
+	<select id="findKnowByDate" resultMap="resultMap1">
+		select
+		k.knowId,k.knowTypeId,k.document,k.uploadDate,t.knowType from
+		knowledge k,knowType t
+		where k.knowTypeId=t.knowTypeId and k.uploadDate between #{startDate} and #{endDate}
+	</select>
+	<insert id="addKnow">
+		insert into knowledge
+		(knowTypeId,document,uploadDate)
+		values(#{knowTypeId},#{uploadDate})
+	</insert>
+	<update id="updateKnow">
+		update knowledge
+		<set>
+			<if test="knowTypeId!=null">knowTypeId=#{knowTypeId},</if>
+			<if test="document!=null">document=#{document},</if>
+			<if test="uploadDate!=null">uploadDate=#{uploadDate}</if>
+
+		</set>
+		where uId=#{uId}
+	</update>
+	<delete id="deleteKnow">
+		delete from knowledge where knowId=#{knowId}
+
+	</delete>
+</mapper>
